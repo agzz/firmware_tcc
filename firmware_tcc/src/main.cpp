@@ -24,11 +24,14 @@
  */
 
 /**
+ * TODO Arrumar função usDelay
+ * TODO Help
  * TODO Input
  * TODO EXTI
  * TODO Endstops
  * TODO Homing
  * TODO Considerar movimentação por lista e interrupção
+ *
  */
 
 #include "stm32f4xx_hal.h"
@@ -43,6 +46,8 @@
 //#define PROTOTIPO
 
 //Limite de movimentação dos eixos em graus
+#define X_MIN 0.0
+#define Y_MIN 0.0
 #define X_MAX 360.0
 #define Y_MAX 360.0
 
@@ -63,7 +68,7 @@ float yPos = 0.0;
 
 //Velocidade de movimentação do sistema
 int feedrate = 18*60;
-uint32_t stepDelay = ((1000000*60/feedrate)/STEPS_DEGREE)-2;
+uint32_t stepDelay;
 
 //Se true, modo absoluto de movimentação, se false, modo relativo
 bool absoluteMode = true;
@@ -162,7 +167,7 @@ int main(void) {
 				//Se houver dados na string analisa o comando (checa por sequências \n\r e \r\n)
 				if (!command.empty()) {
 					//Imprime o comando
-					serial->println(command);
+					serial->println("Comando: " + command);
 
 					//Analisa e executa o comando
 					parseCommand(command);
@@ -242,8 +247,12 @@ void parseCommand(std::string command) {
 			break;
 
 		default:
-			break;
+			serial->println("ERRO: Comando não implementado");
+			return;
 		}
+
+		serial->println("OK");
+		return;
 	}
 
 	//Checar se é um comando M
@@ -281,9 +290,15 @@ void parseCommand(std::string command) {
 			break;
 
 		default:
-			break;
+			serial->println("ERRO: Comando não implementado");
+			return;
 		}
+
+		serial->println("OK");
+		return;
 	}
+
+	serial->println("ERRO: Nao e comando G nem M");
 }
 
 /**
@@ -410,7 +425,8 @@ void line(float newx,float newy) {
                 yAxis.step();
             }
 
-            usDelay(stepDelay);
+            //usDelay(stepDelay);
+            HAL_Delay(2);
         }
     } else {
         over = dy/2;
@@ -423,7 +439,8 @@ void line(float newx,float newy) {
                 xAxis.step();
             }
 
-            usDelay(stepDelay);
+            //usDelay(stepDelay);
+            HAL_Delay(2);
         }
     }
 
