@@ -215,7 +215,7 @@ void parseCommand(std::string command) {
 				feedrate = MIN_FEEDRATE;
 			}
 
-			stepDelay = ((1000000*60/feedrate)/STEPS_DEGREE)-2;
+			stepDelay = ((1000*60/feedrate)/STEPS_DEGREE)-2;
 
 			//Obter os valores de X e Y e fazer a movimentação
 			if (absoluteMode) {
@@ -426,7 +426,7 @@ void line(float newx,float newy) {
             }
 
             //usDelay(stepDelay);
-            HAL_Delay(2);
+            HAL_Delay(1);
         }
     } else {
         over = dy/2;
@@ -440,7 +440,7 @@ void line(float newx,float newy) {
             }
 
             //usDelay(stepDelay);
-            HAL_Delay(2);
+            HAL_Delay(1);
         }
     }
 
